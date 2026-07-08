@@ -2,12 +2,23 @@ import { neon } from '@neondatabase/serverless'
 import { drizzle, type NeonHttpDatabase } from 'drizzle-orm/neon-http'
 import * as schema from './schema.js'
 
+/** Env vars used by Neon / Vercel integrations (in priority order). */
+const DATABASE_URL_KEYS = [
+  'DATABASE_URL',
+  'POSTGRES_URL',
+  'POSTGRES_PRISMA_URL',
+  'NEON_DATABASE_URL',
+] as const
+
 function getDatabaseUrl(): string {
-  const url = process.env.DATABASE_URL
-  if (!url) {
-    throw new Error('DATABASE_URL environment variable is not set')
+  for (const key of DATABASE_URL_KEYS) {
+    const url = process.env[key]
+    if (url) return url
   }
-  return url
+
+  throw new Error(
+    `Database URL not set. Add one of: ${DATABASE_URL_KEYS.join(', ')}`,
+  )
 }
 
 export type Database = NeonHttpDatabase<typeof schema>
