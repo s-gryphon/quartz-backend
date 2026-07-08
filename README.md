@@ -60,9 +60,14 @@ Base path: `/api`
 
 ## Deploy (Vercel)
 
-1. Connect repo to Vercel
+1. Connect repo to Vercel (root directory = repo root, not a parent monorepo folder)
 2. Set `DATABASE_URL` and `JWT_SECRET` in project env vars
-3. Deploy — `vercel.json` routes all requests to the Hono handler
+3. **Do not** set a Build Command or Output Directory — `vercel.json` handles this
+4. Push and deploy
+
+This is an API-only project: there is no static `public` folder. Vercel runs the serverless function at `api/index.ts`.
+
+Verify: `GET https://YOUR-PROJECT.vercel.app/api/health`
 
 ## Project Structure
 
